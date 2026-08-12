@@ -8,7 +8,7 @@ Descarga el instalador de Windows x64 desde la [versión más reciente](https://
 
 > Windows puede mostrar una advertencia de editor desconocido porque el instalador todavía no tiene firma digital.
 
-## Funciones de la versión 1
+## Funciones principales
 
 - Apertura mediante selector, arrastrar y soltar, argumentos de consola o **Abrir con**.
 - CSV separados por coma, punto y coma o tabulador, incluidos campos entre comillas y multilínea.
@@ -18,12 +18,49 @@ Descarga el instalador de Windows x64 desde la [versión más reciente](https://
 - Detección de cambios externos y recarga explícita.
 - Tema de interfaz **Sistema**, **Claro** u **Oscuro**; la preferencia se conserva entre aperturas.
 
+## Arquitectura
+
+Desde la versión 1.1.2, CSV Peek está organizado en cuatro capas con dependencias unidireccionales:
+
+```text
+CsvPeek.App ───────────┬──> CsvPeek.Application ──> CsvPeek.Core
+                      └──> CsvPeek.Infrastructure ─┬──> CsvPeek.Application
+                                                  └──> CsvPeek.Core
+```
+
+- **`CsvPeek.Core`** contiene los modelos, límites, resultados e índice disperso. No conoce WinForms ni accede al sistema de archivos.
+- **`CsvPeek.Application`** define los contratos y coordina los casos de uso mediante `CsvDocumentSession`, `CsvScanEngine`, `CsvIndexCoordinator`, `CsvPageProvider` y `CsvSearchService`.
+- **`CsvPeek.Infrastructure`** implementa la lectura física de registros, detección de formato y codificación, huellas de archivos y persistencia del índice.
+- **`CsvPeek.App`** contiene WinForms y compone las implementaciones. `MainForm` delega el ciclo de vida del documento, la cuadrícula virtual, la búsqueda y el tema a controladores separados.
+
+Al abrir un archivo, la aplicación detecta su formato, carga la primera página y recupera un índice persistido compatible cuando existe. Después completa el índice en segundo plano. Las páginas adicionales se solicitan bajo demanda y la búsqueda puede aprovechar el mismo recorrido activo sin duplicar el escaneo.
+
+La cuadrícula mantiene páginas de 256 filas en una caché limitada a 128 MB. Las actualizaciones del número de filas se agrupan durante el indexado, solo se invalidan las filas visibles de una página recién cargada y el doble búfer reduce el parpadeo durante el desplazamiento.
+
+```text
+src/
+├── CsvPeek.Core
+├── CsvPeek.Application
+├── CsvPeek.Infrastructure
+└── CsvPeek.App
+tests/
+├── CsvPeek.Tests
+└── CsvPeek.App.Tests
+tools/
+└── CsvPeek.Benchmark
+installer/
+└── CsvPeek.Installer.wixproj
+```
+
+Los contratos principales entre capas son `ICsvDocumentSession`, `ICsvDocumentSessionFactory`, `ICsvRecordSourceFactory` e `ICsvIndexStore`. El formato de índice persistido continúa en la versión 1 para reutilizar índices válidos creados por versiones anteriores. Consulta [ARCHITECTURE.md](ARCHITECTURE.md) para ver el flujo interno resumido.
+
 ## Desarrollo
 
 Requisitos: .NET 10 SDK en Windows x64. La aplicación no utiliza paquetes de terceros en tiempo de ejecución; xUnit se utiliza para pruebas y WiX para producir el MSI.
 
 ```powershell
 dotnet test .\tests\CsvPeek.Tests\CsvPeek.Tests.csproj
+dotnet test .\tests\CsvPeek.App.Tests\CsvPeek.App.Tests.csproj
 dotnet run --project .\src\CsvPeek.App\CsvPeek.App.csproj -- "C:\datos\archivo.csv"
 ```
 
@@ -33,9 +70,7 @@ Para producir la publicación autocontenida y el MSI por usuario:
 .\scripts\build-release.ps1
 ```
 
-El MSI registra CSV Peek como alternativa para `.csv`, pero deja que Windows y el usuario decidan cuál aplicación es la predeterminada.
-
-La organización interna y las dependencias entre capas se describen en [ARCHITECTURE.md](ARCHITECTURE.md).
+La versión se centraliza en `Directory.Build.props`. El script ejecuta ambos proyectos de pruebas, publica la aplicación una sola vez, construye el MSI y genera su archivo SHA-256. El MSI registra CSV Peek como alternativa para `.csv`, pero deja que Windows y el usuario decidan cuál aplicación es la predeterminada.
 
 ## Prueba de volumen
 
