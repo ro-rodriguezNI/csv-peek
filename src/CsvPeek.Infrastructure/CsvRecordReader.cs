@@ -1,10 +1,12 @@
 using System.Text;
+using CsvPeek.Application;
+using CsvPeek.Core;
 
-namespace CsvPeek.Core;
+namespace CsvPeek.Infrastructure;
 
-public sealed class CsvRecordReader : IDisposable
+public sealed class CsvRecordReader : ICsvRecordReader
 {
-    public const int DefaultMaxFieldChars = 256 * 1024;
+    public const int DefaultMaxFieldChars = CsvLimits.DefaultMaxFieldChars;
 
     private readonly FileStream _stream;
     private readonly StreamReader _reader;
@@ -19,7 +21,7 @@ public sealed class CsvRecordReader : IDisposable
     private int _peeked = -2;
     private bool _disposed;
 
-    public CsvRecordReader(string path, CsvDialect dialect, long startOffset = -1, long firstRecordNumber = 0, int maxFieldChars = DefaultMaxFieldChars, bool captureFields = true, string? matchQuery = null)
+    public CsvRecordReader(string path, CsvDialect dialect, long startOffset = -1, long firstRecordNumber = 0, int maxFieldChars = CsvLimits.DefaultMaxFieldChars, bool captureFields = true, string? matchQuery = null)
     {
         _dialect = dialect;
         _maxFieldChars = maxFieldChars;

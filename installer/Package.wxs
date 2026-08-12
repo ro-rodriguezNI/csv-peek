@@ -1,7 +1,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Name="CSV Peek"
            Manufacturer="CSV Peek"
-           Version="1.1.0"
+           Version="$(var.CsvPeekVersion)"
            UpgradeCode="8D7B7302-614F-4DC5-B63E-54C90BA603E0"
            Scope="perUser"
            InstallerVersion="500"

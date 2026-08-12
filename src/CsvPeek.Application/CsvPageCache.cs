@@ -1,8 +1,9 @@
-namespace CsvPeek.Core;
+using CsvPeek.Core;
 
-public sealed class CsvPageCache
+namespace CsvPeek.Application;
+
+internal sealed class CsvPageCache
 {
-    public const int PageSize = 256;
     private readonly object _gate = new();
     private readonly Dictionary<long, CacheEntry> _pages = [];
     private readonly HashSet<long> _loading = [];
@@ -15,8 +16,8 @@ public sealed class CsvPageCache
 
     public CsvRecord? TryGet(long dataRow)
     {
-        long page = dataRow / PageSize;
-        int index = (int)(dataRow % PageSize);
+        long page = dataRow / CsvPaging.PageSize;
+        int index = (int)(dataRow % CsvPaging.PageSize);
         lock (_gate)
         {
             if (!_pages.TryGetValue(page, out var entry))
@@ -31,9 +32,9 @@ public sealed class CsvPageCache
         lock (_gate)
         {
             _pages.Clear();
+            _loading.Clear();
             _estimatedBytes = 0;
-            var array = records.Take(PageSize).ToArray();
-            AddPage(0, array);
+            AddPage(0, records.Take(CsvPaging.PageSize).ToArray());
         }
     }
 

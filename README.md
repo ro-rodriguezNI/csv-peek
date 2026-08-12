@@ -35,6 +35,8 @@ Para producir la publicación autocontenida y el MSI por usuario:
 
 El MSI registra CSV Peek como alternativa para `.csv`, pero deja que Windows y el usuario decidan cuál aplicación es la predeterminada.
 
+La organización interna y las dependencias entre capas se describen en [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Prueba de volumen
 
 El generador crea datos de forma incremental y no conserva todas las filas en memoria:

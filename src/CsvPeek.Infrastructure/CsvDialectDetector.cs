@@ -1,6 +1,7 @@
 using System.Text;
+using CsvPeek.Core;
 
-namespace CsvPeek.Core;
+namespace CsvPeek.Infrastructure;
 
 public static class CsvDialectDetector
 {
@@ -107,4 +108,3 @@ public static class CsvDialectDetector
     internal static FileStream OpenShared(string path, FileOptions options = FileOptions.SequentialScan) =>
         new(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 1024 * 1024, options);
 }
-

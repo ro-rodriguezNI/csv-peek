@@ -1,3 +1,6 @@
+using CsvPeek.Application;
+using CsvPeek.Infrastructure;
+
 namespace CsvPeek.App;
 
 internal static class Program
@@ -8,23 +11,26 @@ internal static class Program
         ApplicationConfiguration.Initialize();
         ThemeManager.Initialize();
         var files = args.Where(File.Exists).Select(Path.GetFullPath).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-        var context = new MultiWindowApplicationContext();
+        ICsvDocumentSessionFactory documentFactory = new CsvDocumentSessionFactory(
+            new CsvRecordSourceFactory(),
+            new CsvIndexStore());
+        var context = new MultiWindowApplicationContext(documentFactory);
         if (files.Length == 0)
             context.OpenWindow(null);
         else
             foreach (string file in files)
                 context.OpenWindow(file);
-        Application.Run(context);
+        System.Windows.Forms.Application.Run(context);
     }
 }
 
-internal sealed class MultiWindowApplicationContext : ApplicationContext
+internal sealed class MultiWindowApplicationContext(ICsvDocumentSessionFactory documentFactory) : ApplicationContext
 {
     private int _windowCount;
 
     public void OpenWindow(string? path)
     {
-        var form = new MainForm(path);
+        var form = new MainForm(path, documentFactory);
         _windowCount++;
         form.FormClosed += (_, _) =>
         {

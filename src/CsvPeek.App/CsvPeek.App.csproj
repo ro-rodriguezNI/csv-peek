@@ -3,18 +3,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <LangVersion>13</LangVersion>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>CsvPeek</AssemblyName>
     <RootNamespace>CsvPeek.App</RootNamespace>
     <Product>CSV Peek</Product>
     <Description>Visualizador rápido y de solo lectura para archivos CSV grandes.</Description>
     <Company>CSV Peek</Company>
     <Authors>ro-rodriguezNI</Authors>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>../../assets/csv-peek.ico</ApplicationIcon>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
@@ -25,6 +19,10 @@
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../CsvPeek.Core/CsvPeek.Core.csproj" />
+    <ProjectReference Include="../CsvPeek.Application/CsvPeek.Application.csproj" />
+    <ProjectReference Include="../CsvPeek.Infrastructure/CsvPeek.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="CsvPeek.App.Tests" />
   </ItemGroup>
 </Project>

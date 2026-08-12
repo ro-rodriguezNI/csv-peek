@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <CsvPeekVersion>1.1.2</CsvPeekVersion>
+    <Version>$(CsvPeekVersion)</Version>
+    <AssemblyVersion>$(CsvPeekVersion).0</AssemblyVersion>
+    <FileVersion>$(CsvPeekVersion).0</FileVersion>
+    <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+</Project>

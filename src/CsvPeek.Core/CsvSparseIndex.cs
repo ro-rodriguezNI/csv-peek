@@ -67,7 +67,7 @@ public sealed class CsvSparseIndex
             return _offsets.ToArray();
     }
 
-    internal void Load(long[] offsets, long recordCount)
+    public void Restore(long[] offsets, long recordCount)
     {
         lock (_gate)
         {
@@ -79,4 +79,3 @@ public sealed class CsvSparseIndex
         }
     }
 }
-

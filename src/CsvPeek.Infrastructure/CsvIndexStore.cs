@@ -1,9 +1,11 @@
 using System.Security.Cryptography;
 using System.Text;
+using CsvPeek.Application;
+using CsvPeek.Core;
 
-namespace CsvPeek.Core;
+namespace CsvPeek.Infrastructure;
 
-public sealed class CsvIndexStore
+public sealed class CsvIndexStore : ICsvIndexStore
 {
     private const int FormatVersion = 1;
     private static readonly byte[] Magic = "CSVPEEKIDX"u8.ToArray();
@@ -23,7 +25,7 @@ public sealed class CsvIndexStore
 
     public async Task SaveAsync(CsvFileFingerprint fingerprint, CsvDialect dialect, CsvSparseIndex index, CancellationToken cancellationToken = default)
     {
-        if (!index.IsComplete || !fingerprint.StillMatches())
+        if (!index.IsComplete)
             return;
 
         Directory.CreateDirectory(_directory);
@@ -79,7 +81,7 @@ public sealed class CsvIndexStore
             long[] offsets = new long[count];
             for (int i = 0; i < count; i++)
                 offsets[i] = await reader.ReadInt64Async(cancellationToken);
-            index.Load(offsets, recordCount);
+            index.Restore(offsets, recordCount);
             return true;
         }
         catch (Exception ex) when (ex is IOException or EndOfStreamException or DecoderFallbackException)
@@ -108,4 +110,3 @@ public sealed class CsvIndexStore
         public ValueTask DisposeAsync() => stream.DisposeAsync();
     }
 }
-

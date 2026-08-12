@@ -1,5 +1,6 @@
 using System.Text;
 using CsvPeek.Core;
+using CsvPeek.Infrastructure;
 
 namespace CsvPeek.Tests;
 
@@ -93,4 +94,3 @@ public sealed class CsvParserTests : IDisposable
             Directory.Delete(_directory, true);
     }
 }
-

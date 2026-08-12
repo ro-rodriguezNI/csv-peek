@@ -80,7 +80,7 @@ internal static class ThemeManager
 
     private static void ApplyNativeColorMode(ThemePreference preference)
     {
-        Application.SetColorMode(preference switch
+        System.Windows.Forms.Application.SetColorMode(preference switch
         {
             ThemePreference.Dark => SystemColorMode.Dark,
             ThemePreference.Light => SystemColorMode.Classic,

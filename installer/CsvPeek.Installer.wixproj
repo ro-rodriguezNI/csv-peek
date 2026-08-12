@@ -6,10 +6,11 @@
          though this is the intended, non-elevated per-user deployment. -->
     <SuppressValidation>true</SuppressValidation>
     <PublishDir>$(MSBuildThisFileDirectory)..\artifacts\publish\win-x64</PublishDir>
-    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+    <DefineConstants>PublishDir=$(PublishDir);CsvPeekVersion=$(CsvPeekVersion)</DefineConstants>
+    <SkipCsvPeekPublish Condition="'$(SkipCsvPeekPublish)' == ''">false</SkipCsvPeekPublish>
   </PropertyGroup>
 
-  <Target Name="PublishCsvPeek" BeforeTargets="BeforeBuild">
+  <Target Name="PublishCsvPeek" BeforeTargets="BeforeBuild" Condition="'$(SkipCsvPeekPublish)' != 'true'">
     <MSBuild Projects="$(MSBuildThisFileDirectory)..\src\CsvPeek.App\CsvPeek.App.csproj"
              Targets="Publish"
              Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishReadyToRun=true;PublishSingleFile=false;PublishDir=$(PublishDir)\" />
