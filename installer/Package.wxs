@@ -1,0 +1,50 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="CSV Peek"
+           Manufacturer="CSV Peek"
+           Version="1.1.0"
+           UpgradeCode="8D7B7302-614F-4DC5-B63E-54C90BA603E0"
+           Scope="perUser"
+           InstallerVersion="500"
+           Compressed="yes">
+
+    <MajorUpgrade DowngradeErrorMessage="Ya hay instalada una versión más reciente de CSV Peek." />
+    <MediaTemplate EmbedCab="yes" />
+    <Icon Id="CsvPeekIcon.ico" SourceFile="..\assets\csv-peek.ico" />
+    <Property Id="ARPPRODUCTICON" Value="CsvPeekIcon.ico" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="LocalProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="CSV Peek" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="CSV Peek" />
+    </StandardDirectory>
+
+    <Files Include="$(PublishDir)\**" Directory="INSTALLFOLDER" />
+
+    <Component Id="FileAssociations" Directory="INSTALLFOLDER" Guid="*">
+      <RegistryValue Root="HKCU" Key="Software\Classes\CSVPeek.csv" Value="Archivo CSV" Type="string" KeyPath="yes" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\CSVPeek.csv" Name="FriendlyTypeName" Value="Archivo CSV" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\CSVPeek.csv\DefaultIcon" Value="[INSTALLFOLDER]CsvPeek.exe,0" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\CSVPeek.csv\shell\open\command" Value="&quot;[INSTALLFOLDER]CsvPeek.exe&quot; &quot;%1&quot;" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\.csv\OpenWithProgids" Name="CSVPeek.csv" Value="" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\Applications\CsvPeek.exe" Name="FriendlyAppName" Value="CSV Peek" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\Applications\CsvPeek.exe\SupportedTypes" Name=".csv" Value="" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\CSV Peek\Capabilities" Name="ApplicationName" Value="CSV Peek" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\CSV Peek\Capabilities" Name="ApplicationDescription" Value="Visualizador rápido y de solo lectura para archivos CSV grandes." Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\CSV Peek\Capabilities\FileAssociations" Name=".csv" Value="CSVPeek.csv" Type="string" />
+      <RegistryValue Root="HKCU" Key="Software\RegisteredApplications" Name="CSV Peek" Value="Software\CSV Peek\Capabilities" Type="string" />
+    </Component>
+
+    <Component Id="StartMenuShortcut" Directory="ApplicationProgramsFolder" Guid="*">
+      <Shortcut Id="CsvPeekStartMenuShortcut"
+                Name="CSV Peek"
+                Description="Visualizador rápido de archivos CSV"
+                Target="[INSTALLFOLDER]CsvPeek.exe"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="RemoveApplicationProgramsFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\CSV Peek" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+  </Package>
+</Wix>

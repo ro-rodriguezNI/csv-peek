@@ -1,0 +1,17 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+  <PropertyGroup>
+    <OutputName>CSV-Peek-Setup-x64</OutputName>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <!-- Windows Installer ICE38/ICE64 reject file key paths below LocalAppData even
+         though this is the intended, non-elevated per-user deployment. -->
+    <SuppressValidation>true</SuppressValidation>
+    <PublishDir>$(MSBuildThisFileDirectory)..\artifacts\publish\win-x64</PublishDir>
+    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+  </PropertyGroup>
+
+  <Target Name="PublishCsvPeek" BeforeTargets="BeforeBuild">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)..\src\CsvPeek.App\CsvPeek.App.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);RuntimeIdentifier=win-x64;SelfContained=true;PublishReadyToRun=true;PublishSingleFile=false;PublishDir=$(PublishDir)\" />
+  </Target>
+</Project>

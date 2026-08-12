@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/CsvPeek.Core/CsvPeek.Core.csproj" />
+  <Project Path="src/CsvPeek.App/CsvPeek.App.csproj" />
+  <Project Path="tests/CsvPeek.Tests/CsvPeek.Tests.csproj" />
+  <Project Path="tools/CsvPeek.Benchmark/CsvPeek.Benchmark.csproj" />
+  <Project Path="installer/CsvPeek.Installer.wixproj" />
+</Solution>
